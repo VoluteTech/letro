@@ -6,21 +6,48 @@
     <script src="https://unpkg.com/htmx.org@2.0.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   </head>
-  <body>
-    <div class="w-80 bg-gray-200 p-4 rounded-xl shadow-md">
-      <h2 class="font-bold text-gray-700 mb-3 px-1">To Do</h2>
+  <body class="p-8 bg-gray-100 min-h-screen">
+    <div class="flex gap-6 justify-center">
 
-      <div id="card-list" class="space-y-2 mb-3">
+      <div class="w-80 bg-gray-200 p-4 rounded-xl shadow-md h-min">
+        <h2 class="font-bold text-gray-700 mb-3 px-1">To Do</h2>
+        <div id="card-list-todo" class="space-y-2 mb-3"></div>
+        <div id="form-container-todo">
+          <button hx-get="/cards/new?column=todo"
+            hx-target="#form-container-todo"
+            hx-swap="outerHTML"
+            class="w-full text-left bg-transparent hover:bg-gray-300 text-gray-600 font-medium p-2 rounded-lg transition cursor-pointer">
+            + Add a card
+          </button>
+        </div>
       </div>
 
-      <div id="form-container">
-        <button hx-get="/cards/new" 
-          hx-target="#form-container" 
-          hx-swap="outerHTML" 
-          class="w-full text-left bg-transparent hover:bg-gray-300 text-gray-600 font-medium p-2 rounded-lg transition">
-          + Add a card
-        </button>
+      <div class="w-80 bg-gray-200 p-4 rounded-xl shadow-md h-min">
+        <h2 class="font-bold text-gray-700 mb-3 px-1">WIP</h2>
+        <div id="card-list-wip" class="space-y-2 mb-3"></div>
+        <div id="form-container-wip">
+          <button hx-get="/cards/new?column=wip"
+            hx-target="#form-container-wip"
+            hx-swap="outerHTML"
+            class="w-full text-left bg-transparent hover:bg-gray-300 text-gray-600 font-medium p-2 rounded-lg transition cursor-pointer">
+            + Add a card
+          </button>
+        </div>
       </div>
+
+      <div class="w-80 bg-gray-200 p-4 rounded-xl shadow-md h-min">
+        <h2 class="font-bold text-gray-700 mb-3 px-1">Done</h2>
+        <div id="card-list-done" class="space-y-2 mb-3"></div>
+        <div id="form-container-done">
+          <button hx-get="/cards/new?column=done"
+            hx-target="#form-container-done"
+            hx-swap="outerHTML"
+            class="w-full text-left bg-transparent hover:bg-gray-300 text-gray-600 font-medium p-2 rounded-lg transition cursor-pointer">
+            + Add a card
+          </button>
+        </div>
+      </div>
+
     </div>
   </body>
 </html>

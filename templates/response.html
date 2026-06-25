@@ -1,15 +1,6 @@
-<div id="form-container">
-  <button id="form-container"
-    hx-get="/cards/new" 
-    hx-target="#form-container" 
-    hx-swap="outerHTML" 
-    class="w-full text-left bg-transparent hover:bg-gray-300 text-gray-600 font-medium p-2 rounded-lg transition cursor-pointer">
-    + Add a card
-  </button>
-
-  <div id="card-list" hx-swap-oob="beforeend">
-    <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-300 font-medium text-gray-800 text-sm break-words">
-      {{.Title}}
-    </div>
-  </div>
+<div class="bg-white p-3 rounded-lg shadow-sm border border-gray-300 space-y-1.5">
+  <h3 class="font-semibold text-gray-800 text-sm">{{.Card.Title}}</h3>
+  {{if .Card.Description}}
+    <p class="text-gray-500 text-xs leading-relaxed">{{.Card.Description}}</p>
+  {{end}}
 </div>

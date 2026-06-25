@@ -1,8 +1,8 @@
-<div id="form-container">
-  <button id="form-container"
-    hx-get="/cards/new" 
-    hx-target="#form-container" 
-    hx-swap="outerHTML" 
+<div id="form-container-{{.Column}}">
+  <button
+    hx-get="/cards/new?column={{.Column}}"
+    hx-target="#form-container-{{.Column}}"
+    hx-swap="outerHTML"
     class="w-full text-left bg-transparent hover:bg-gray-300 text-gray-600 font-medium p-2 rounded-lg transition cursor-pointer">
     + Add a card
   </button>
