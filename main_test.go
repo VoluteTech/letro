@@ -151,6 +151,9 @@ func TestCreateCard(t *testing.T) {
 			if !strings.Contains(body, "closest .bg-white") {
 				t.Error("expected edit button to target closest .bg-white")
 			}
+			if !strings.Contains(body, "hx-delete") {
+				t.Error("expected delete button in response")
+			}
 
 			hxTrigger := res.Header.Get("HX-Trigger")
 			wantTrigger := "restore-form-" + tt.column
@@ -387,5 +390,69 @@ func TestGetCard_NotFound(t *testing.T) {
 	res := w.Result()
 	if res.StatusCode != http.StatusNotFound {
 		t.Errorf("expected 404, got %d", res.StatusCode)
+	}
+}
+
+func TestDeleteCard(t *testing.T) {
+	form := url.Values{}
+	form.Set("title", "Delete Me")
+	form.Set("description", "")
+	form.Set("column", "todo")
+
+	r := httptest.NewRequest("POST", "/cards", strings.NewReader(form.Encode()))
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	w := httptest.NewRecorder()
+	handleCreateCard(w, r)
+
+	var cardID int
+	for id, c := range cards {
+		if c.Title == "Delete Me" {
+			cardID = id
+			break
+		}
+	}
+	if cardID == 0 {
+		t.Fatal("card not found in store")
+	}
+
+	r2 := httptest.NewRequest("DELETE", "/cards/"+strconv.Itoa(cardID), nil)
+	r2.SetPathValue("id", strconv.Itoa(cardID))
+	w2 := httptest.NewRecorder()
+	handleDeleteCard(w2, r2)
+
+	res := w2.Result()
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("expected 200, got %d", res.StatusCode)
+	}
+
+	cardsMu.Lock()
+	_, ok := cards[cardID]
+	cardsMu.Unlock()
+	if ok {
+		t.Error("expected card to be removed from store")
+	}
+}
+
+func TestDeleteCard_NotFound(t *testing.T) {
+	r := httptest.NewRequest("DELETE", "/cards/99999", nil)
+	r.SetPathValue("id", "99999")
+	w := httptest.NewRecorder()
+	handleDeleteCard(w, r)
+
+	res := w.Result()
+	if res.StatusCode != http.StatusNotFound {
+		t.Errorf("expected 404, got %d", res.StatusCode)
+	}
+}
+
+func TestDeleteCard_InvalidID(t *testing.T) {
+	r := httptest.NewRequest("DELETE", "/cards/abc", nil)
+	r.SetPathValue("id", "abc")
+	w := httptest.NewRecorder()
+	handleDeleteCard(w, r)
+
+	res := w.Result()
+	if res.StatusCode != http.StatusBadRequest {
+		t.Errorf("expected 400, got %d", res.StatusCode)
 	}
 }

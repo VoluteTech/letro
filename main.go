@@ -44,6 +44,7 @@ func main() {
 	http.HandleFunc("GET /cards/edit/{id}", handleEditCard)
 	http.HandleFunc("PUT /cards/{id}", handleUpdateCard)
 	http.HandleFunc("GET /cards/{id}", handleGetCard)
+	http.HandleFunc("DELETE /cards/{id}", handleDeleteCard)
 
 	log.Println("Server starting on http://localhost:42069")
 	log.Fatal(http.ListenAndServe(":42069", nil))
@@ -145,6 +146,26 @@ func handleUpdateCard(w http.ResponseWriter, r *http.Request) {
 	cardsMu.Unlock()
 
 	renderTemplate(w, "response.html", TemplateData{Column: column, Card: card})
+}
+
+func handleDeleteCard(w http.ResponseWriter, r *http.Request) {
+	idStr := r.PathValue("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Invalid card ID", http.StatusBadRequest)
+		return
+	}
+
+	cardsMu.Lock()
+	if _, ok := cards[id]; !ok {
+		cardsMu.Unlock()
+		http.Error(w, "Card not found", http.StatusNotFound)
+		return
+	}
+	delete(cards, id)
+	cardsMu.Unlock()
+
+	w.WriteHeader(http.StatusOK)
 }
 
 func handleGetCard(w http.ResponseWriter, r *http.Request) {
