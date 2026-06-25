@@ -3,4 +3,10 @@
   {{if .Card.Description}}
     <p class="text-gray-500 text-xs leading-relaxed">{{.Card.Description}}</p>
   {{end}}
+  <button hx-get="/cards/edit/{{.Card.ID}}?column={{.Column}}"
+    hx-target="closest .bg-white"
+    hx-swap="outerHTML"
+    class="text-xs text-blue-600 hover:text-blue-800 font-medium cursor-pointer">
+    Edit
+  </button>
 </div>
