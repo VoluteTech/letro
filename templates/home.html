@@ -17,6 +17,7 @@
             animation: 150,
             ghostClass: 'opacity-50',
             filter: '[data-no-sortable]',
+            preventOnFilter: false,
             onEnd: function(evt) {
               var fromCol = evt.from.id.replace('card-list-', '');
               var toCol   = evt.to.id.replace('card-list-', '');
