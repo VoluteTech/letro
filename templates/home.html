@@ -4,50 +4,34 @@
     <meta charset="utf-8">
     <title>Oui</title>
     <script src="https://unpkg.com/htmx.org@2.0.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   </head>
   <body class="p-8 bg-gray-100 min-h-screen">
-    <div class="flex gap-6 justify-center">
-
-      <div class="w-80 bg-gray-200 p-4 rounded-xl shadow-md h-min">
-        <h2 class="font-bold text-gray-700 mb-3 px-1">To Do</h2>
-        <div id="card-list-todo" class="space-y-2 mb-3"></div>
-        <div id="form-container-todo">
-          <button hx-get="/cards/new?column=todo"
-            hx-target="#form-container-todo"
-            hx-swap="outerHTML"
-            class="w-full text-left bg-transparent hover:bg-gray-300 text-gray-600 font-medium p-2 rounded-lg transition cursor-pointer">
-            + Add a card
-          </button>
-        </div>
-      </div>
-
-      <div class="w-80 bg-gray-200 p-4 rounded-xl shadow-md h-min">
-        <h2 class="font-bold text-gray-700 mb-3 px-1">WIP</h2>
-        <div id="card-list-wip" class="space-y-2 mb-3"></div>
-        <div id="form-container-wip">
-          <button hx-get="/cards/new?column=wip"
-            hx-target="#form-container-wip"
-            hx-swap="outerHTML"
-            class="w-full text-left bg-transparent hover:bg-gray-300 text-gray-600 font-medium p-2 rounded-lg transition cursor-pointer">
-            + Add a card
-          </button>
-        </div>
-      </div>
-
-      <div class="w-80 bg-gray-200 p-4 rounded-xl shadow-md h-min">
-        <h2 class="font-bold text-gray-700 mb-3 px-1">Done</h2>
-        <div id="card-list-done" class="space-y-2 mb-3"></div>
-        <div id="form-container-done">
-          <button hx-get="/cards/new?column=done"
-            hx-target="#form-container-done"
-            hx-swap="outerHTML"
-            class="w-full text-left bg-transparent hover:bg-gray-300 text-gray-600 font-medium p-2 rounded-lg transition cursor-pointer">
-            + Add a card
-          </button>
-        </div>
-      </div>
-
-    </div>
+    {{template "board.html" .}}
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('[id^="card-list-"]').forEach(function(el) {
+          new Sortable(el, {
+            group: 'cards',
+            animation: 150,
+            ghostClass: 'opacity-50',
+            filter: '[data-no-sortable]',
+            onEnd: function(evt) {
+              var fromCol = evt.from.id.replace('card-list-', '');
+              var toCol   = evt.to.id.replace('card-list-', '');
+              if (fromCol === toCol) return;
+              var cardId = evt.item.dataset.id;
+              if (!cardId) return;
+              htmx.ajax('PATCH', '/cards/' + cardId + '/move', {
+                target: '[data-id="' + cardId + '"]',
+                swap: 'outerHTML',
+                values: { column: toCol }
+              });
+            }
+          });
+        });
+      });
+    </script>
   </body>
 </html>

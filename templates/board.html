@@ -1,0 +1,54 @@
+{{define "board.html"}}
+<div id="board" class="flex gap-6 justify-center">
+  <div class="w-80 bg-gray-200 p-4 rounded-xl shadow-md h-min">
+    <h2 class="font-bold text-gray-700 mb-3 px-1">To Do</h2>
+    <div id="card-list-todo" class="space-y-2 mb-3">
+      {{range .TodoCards}}
+      {{template "response.html" dict "Card" . "Column" "todo"}}
+      {{end}}
+    </div>
+    <div id="form-container-todo">
+      <button hx-get="/cards/new?column=todo"
+        hx-target="#form-container-todo"
+        hx-swap="outerHTML"
+        class="w-full text-left bg-transparent hover:bg-gray-300 text-gray-600 font-medium p-2 rounded-lg transition cursor-pointer">
+        + Add a card
+      </button>
+    </div>
+  </div>
+
+  <div class="w-80 bg-gray-200 p-4 rounded-xl shadow-md h-min">
+    <h2 class="font-bold text-gray-700 mb-3 px-1">WIP</h2>
+    <div id="card-list-wip" class="space-y-2 mb-3">
+      {{range .WipCards}}
+      {{template "response.html" dict "Card" . "Column" "wip"}}
+      {{end}}
+    </div>
+    <div id="form-container-wip">
+      <button hx-get="/cards/new?column=wip"
+        hx-target="#form-container-wip"
+        hx-swap="outerHTML"
+        class="w-full text-left bg-transparent hover:bg-gray-300 text-gray-600 font-medium p-2 rounded-lg transition cursor-pointer">
+        + Add a card
+      </button>
+    </div>
+  </div>
+
+  <div class="w-80 bg-gray-200 p-4 rounded-xl shadow-md h-min">
+    <h2 class="font-bold text-gray-700 mb-3 px-1">Done</h2>
+    <div id="card-list-done" class="space-y-2 mb-3">
+      {{range .DoneCards}}
+      {{template "response.html" dict "Card" . "Column" "done"}}
+      {{end}}
+    </div>
+    <div id="form-container-done">
+      <button hx-get="/cards/new?column=done"
+        hx-target="#form-container-done"
+        hx-swap="outerHTML"
+        class="w-full text-left bg-transparent hover:bg-gray-300 text-gray-600 font-medium p-2 rounded-lg transition cursor-pointer">
+        + Add a card
+      </button>
+    </div>
+  </div>
+</div>
+{{end}}

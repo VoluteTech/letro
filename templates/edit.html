@@ -1,4 +1,4 @@
-<div class="bg-white p-3 rounded-lg shadow-sm border border-gray-300 space-y-2">
+<div class="bg-white p-3 rounded-lg shadow-sm border border-gray-300 space-y-2" data-no-sortable>
   <form hx-put="/cards/{{.Card.ID}}" hx-target="closest .bg-white" hx-swap="outerHTML" class="space-y-2">
     <input type="hidden" name="column" value="{{.Column}}">
     <textarea name="title" required rows="2"
